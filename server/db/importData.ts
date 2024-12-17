@@ -4,7 +4,7 @@ const db = useDrizzle();
 const schema = tables;
 
 export const importData = async () => {
-  const basePath = `./lhs_team_23`;
+  const basePath = `./lhs_team_24`;
   const stringToArray = (str: string): Array<any> => {
     return str
       .split("\n")
@@ -44,7 +44,7 @@ export const importData = async () => {
   const athletes = await fs.readFile(`${basePath}/Athlete.json`, "utf8");
 
   for (const athlete of stringToArray(athletes)) {
-    await db.insert(schema.usersTable).values({
+    await db.insert(schema.athleteTable).values({
       athlete: athlete.Athlete,
       team1: athlete.Team1,
       team2: athlete.Team2,

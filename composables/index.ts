@@ -21,7 +21,7 @@ export const individualRelayLong: Record<string, string> = {
   R: "Relay",
 };
 export const useFormatEvent = (event: any) => {
-  return `${sexLong[event.sex] || ""} ${event.distance} ${
+  return `${sexLong[event?.sex] || ""} ${event.distance} ${
     strokes[event.stroke - 1]?.stroke_name
   } ${individualRelayLong[event.iR] || ""}`;
 };

@@ -116,6 +116,7 @@ export const meetRelations = relations(meetTable, ({ many }) => {
   return {
     events: many(meetEventsTable),
   };
+
 });
 
 export const meetEventsRelations = relations(meetEventsTable, ({ one, many }) => {
@@ -125,6 +126,7 @@ export const meetEventsRelations = relations(meetEventsTable, ({ one, many }) =>
       references: [meetTable.meet],
     }),
     entries: many(entryTable),
+    results: many(resultsTable),
   };
 });
 /*{"Meet":144,"Athlete":480,"I_R":"E","Team":1,"Course":"Y","Ex":"4","MtEvent":2286,"Misc":"C","Entry":13897,"HEAT":0,"LANE":0,"FromOME":0}
@@ -265,6 +267,7 @@ export const teamRelations = relations(teamsTable, ({ many }) => {
 export const athleteRelations = relations(athleteTable, ({ many, one }) => {
   return {
     entries: many(entryTable),
+    results: many(resultsTable),
     //relays: many(relayTable),
     team: one(teamsTable, {
       fields: [athleteTable.team1],

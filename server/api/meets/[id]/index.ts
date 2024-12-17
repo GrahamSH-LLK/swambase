@@ -1,7 +1,7 @@
-export default defineEventHandler((event) => {
+export default defineEventHandler(async (event) => {
   const db = useDrizzle();
   const params = getRouterParams(event);
-  const meet = db.query.meetTable.findFirst({
+  const meet = await db.query.meetTable.findFirst({
     where: eq(tables.meetTable.meet, parseInt(params.id)),
     with: {
       events: {
@@ -27,5 +27,12 @@ export default defineEventHandler((event) => {
       message: "Meet not found",
     });
   }
-  return meet;
+  // get all results for the meet
+  const results = await db.query.resultsTable.findMany({
+    where: eq(tables.resultsTable.meet, parseInt(params.id)),
+    with: {
+      athlete: true,
+    },
+  });
+  return {...meet, results};
 });

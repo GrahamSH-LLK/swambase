@@ -7,11 +7,17 @@ export default defineEventHandler((event) => {
       eq(tables.meetEventsTable.meet, parseInt(params.id))
     ),
     with: {
-      entries: {
-        orderBy: (entries, { asc }) => [asc(entries.heat),asc(entries.lane)],
+      results: {
         with: {
-          athlete: true
-        }
+          athlete: true,
+        },
+      },
+
+      entries: {
+        orderBy: (entries, { asc }) => [asc(entries.heat), asc(entries.lane)],
+        with: {
+          athlete: true,
+        },
       },
     },
   });
