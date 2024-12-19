@@ -1,7 +1,7 @@
 <template>
-  <UContainer class="flex flex-col gap-4">
+  <div class="flex flex-col gap-4 p-4 flex-1 mx-auto">
     <MeetHeader />
-    <UTabs :items="items" :content="false" v-model="activeTab"></UTabs>
+    <UTabs :items="items" :content="false" v-model="activeTab" ></UTabs>
     <UCard>
       <UTable
         :data="events"
@@ -49,10 +49,11 @@
         <UTable :data="resultsTable"> </UTable>
       </div>
     </UCard>
-  </UContainer>
+  </div>
 </template>
 <script setup lang="ts">
 const route = useRoute();
+const breakpoints = useBreakpoints(breakpointsTailwind)
 
 const { data, status, error, refresh, clear } = await useFetch(
   `/api/meets/${route.params.slug}`,
@@ -152,6 +153,7 @@ const athleteColumns = ref([
     id: "actions",
   },
 ]);
+import { breakpointsTailwind } from "@vueuse/core";
 import { useRouteHash, useRouteQuery } from "@vueuse/router";
 import { formatDuration } from "date-fns";
 const resultsTable = computed(() => {

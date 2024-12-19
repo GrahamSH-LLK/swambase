@@ -1,6 +1,6 @@
 <template>
   <header
-    class="w-full border-b border-b-1 border-red-400 bg-red-50/50 backdrop-blur dark:bg-gray-950/25 mb-4 shadow-xs shadow-red-400/50 "
+    class="w-full border-b  border-red-400 bg-red-50/50 backdrop-blur dark:bg-gray-950/25 mb-4 shadow-xs shadow-red-400/50 "
   >
     <div
       class="mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl flex items-center justify-between gap-3 h-[var(--ui-header-height)]"

@@ -1,5 +1,5 @@
 <template>
-  <UContainer class="flex flex-col gap-4">
+  <div class="flex flex-col gap-4">
     <MeetHeader />
     <h2 class="text-2xl font-extrabold">{{ data.first }} {{ data.last }}</h2>
 
@@ -16,7 +16,7 @@
       </template>
       <UTable :data="resultsRows" class="flex-1" />
     </UCard>
-  </UContainer>
+</div>
 </template>
 
 <script setup lang="ts">
