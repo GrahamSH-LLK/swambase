@@ -12,7 +12,7 @@
     </UCard>
     <UCard>
       <template #header>
-        <span 1="font-bold text-xl">Results</span>
+        <span class="font-bold text-xl">Results</span>
       </template>
       <UTable :data="resultsRows" class="flex-1" />
     </UCard>
@@ -20,6 +20,7 @@
 </template>
 
 <script setup lang="ts">
+import { formatDuration, intervalToDuration } from "date-fns";
 const route = useRoute();
 const { data } = await useFetch(
   `/api/meets/${route.params.slug}/athletes/${route.params.id}`,
@@ -49,12 +50,14 @@ const columns = ref([
     },
   },
 ]);
+
 const resultsRows = computed(() => {
   return data.value?.results?.map((result) => {
+
     return {
       event: useFormatEvent(result),
       place: result.place,
-      time: `COMING SOON`
+      time: useFormatTime(result.score), //`COMING SOON`
     };
   });
 });

@@ -15,7 +15,7 @@ export const teamsTable = pgTable("teams", {
   reg: varchar(),
   minAge: integer(),
   numAth: integer(),
-  tm2000: integer(),
+  tm2000: boolean(),
 });
 
 export const athleteTable = pgTable("athletes", {
@@ -212,7 +212,7 @@ export const splitsTable = pgTable("splits", {
 export const splitsRelations = relations(splitsTable, ({ one }) => {
   return {
     result: one(resultsTable, {
-      fields: [splitsTable.split],
+      fields: [splitsTable.splitID],
       references: [resultsTable.result],
     }),
   };

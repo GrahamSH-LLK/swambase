@@ -9,15 +9,21 @@
         class="flex-1"
         v-if="activeTab == '0'"
       >
+      <template #number-cell="{row}">
+        <UButton :to="`/meet/${route.params.slug}/events/${row.original.number}`" class=" "  >
+          {{ row.original.number }}
+        </UButton>
+      </template>
         <template #entries-cell="{ row }">
+        
           <div v-if="row.original.individual" class="flex gap-2">
             <NuxtLink
               :to="`/meet/${route.params.slug}/athletes/${entry.athlete.athlete}`"
               v-for="entry of row.getValue(`entries`)"
             >
-              <UBadge class="capitalize" variant="subtle" :color="colors[entry.team]"
+              <UBadge class="capitalize hover:ring-neutral-400 hover:bg-neutral-200 transition-colors" variant="subtle" :color="colors[entry.team]"
                 >{{ entry.athlete.first }}
-                {{ entry.athlete.last }}</UBadge
+                {{ entry.athlete.last }} <span class="font-stretch-condensed text-slate-500">H{{ entry.heat}} {{  entry.lane && "L" + entry.lane }}</span></UBadge
               >
             </NuxtLink>
           </div>
@@ -40,7 +46,6 @@
         </UTable>
       </div>
       <div v-else-if="activeTab == '2'">
-        <p class="italic">Proper </p>
         <UTable :data="resultsTable"> </UTable>
       </div>
     </UCard>
@@ -61,7 +66,7 @@ const events = computed(() => {
       entries: event.entries,
       individual: event.iR == "I",
     };
-  });
+  }).filter((x)=> x.number);
 });
 const UBadge = resolveComponent("UBadge");
 const NuxtLink = resolveComponent("NuxtLink");
@@ -70,15 +75,15 @@ const colors = ["warning", "neutral", "info", "error", "success"];
 const columns = [
   {
     accessorKey: "number",
-    label: "Event Number",
+    header: "Event Number",
   },
   {
     accessorKey: "name",
-    label: "Event Name",
+    header: "Event Name",
   },
   {
     accessorKey: "entries",
-    label: "Entries",
+    header: "Entries",
   },
 ];
 const items = ref([
@@ -155,7 +160,7 @@ const resultsTable = computed(() => {
     return {
       place: result.place,
       event: useFormatEvent(result),
-      time: `COMING SOON!`,//formatDuration({ seconds: result.score }),
+      time: useFormatTime(result.score),
       athlete: result?.athlete?.first + " " + result?.athlete?.last,
     };
   });
