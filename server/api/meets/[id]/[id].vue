@@ -1,5 +1,5 @@
 <template>
-  <UContainer class="flex flex-col gap-4">
+  <div class="flex flex-col gap-4">
     <MeetHeader />
 
     <h2 class="text-2xl">{{ useFormatEvent(data) }}</h2>
@@ -16,10 +16,9 @@
       {{ entry.athlete?.first }} {{ entry.athlete?.last }}
     </UCard>
     <UCard v-if="activeTab == '1'">
-      <UTable :data="resultsTable" :columns="resultsColumns"/>
+      <UTable :data="resultsTable" :columns="resultsColumns" />
     </UCard>
-    </UContainer
-  >
+  </div>
 </template>
 
 <script setup>
@@ -41,30 +40,30 @@ const tabItems = ref([
     icon: "i-lucide-trophy",
   },
 ]);
-const resultsTable = computed(()=> {
-    return data.value.results.map((result) => {
-        return {
-            place: result.place,
-            time: result.time,
-            athlete: result.athlete,
-        }
-    })
-})
+const resultsTable = computed(() => {
+  return data.value.results.map((result) => {
+    return {
+      place: result.place,
+      time: result.time,
+      athlete: result.athlete,
+    };
+  });
+});
 const resultsColumns = [
-    {
-        accessorKey: "place",
-        label: "Place",
+  {
+    accessorKey: "place",
+    label: "Place",
+  },
+  {
+    accessorKey: "time",
+    label: "Time",
+  },
+  {
+    accessorKey: "athlete",
+    label: "Athlete",
+    cell: ({ row }) => {
+      return `${row.original.athlete.first} ${row.original.athlete.last}`;
     },
-    {
-        accessorKey: "time",
-        label: "Time",
-    },
-    {
-        accessorKey: "athlete",
-        label: "Athlete",
-        cell: ({ row }) => {
-            return `${row.original.athlete.first} ${row.original.athlete.last}`
-        }
-    }
-]
+  },
+];
 </script>

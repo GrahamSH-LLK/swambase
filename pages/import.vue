@@ -1,5 +1,5 @@
 <template>
-  <UContainer>
+  <div>
     <h2 class="text-2xl font-extrabold">Upload a Meet Database</h2>
     <p>
       Upload a .mdb file from <code>`C:\TM5Data`</code> to import a meet into
@@ -16,7 +16,7 @@
 
       <UButton type="submit"> Submit </UButton>
     </UForm>
-  </UContainer>
+  </div>
 </template>
 <script setup lang="ts">
 import type { FormSubmitEvent } from "@nuxt/ui";

@@ -1,29 +1,36 @@
 <template>
-  <div class="flex flex-col gap-4 p-4 flex-1 mx-auto">
+  <div class="flex flex-col gap-4 p-4 flex-1 mx-auto w-full">
     <MeetHeader />
-    <UTabs :items="items" :content="false" v-model="activeTab" ></UTabs>
-    <UCard>
+    <UTabs :items="items" :content="false" v-model="activeTab"></UTabs>
+    <UCard class="flex overflow-x-scroll">
       <UTable
         :data="events"
         :columns="columns"
-        class="flex-1"
+        class="flex-1 oveflow-auto"
         v-if="activeTab == '0'"
       >
-      <template #number-cell="{row}">
-        <UButton :to="`/meet/${route.params.slug}/events/${row.original.number}`" class=" "  >
-          {{ row.original.number }}
-        </UButton>
-      </template>
+        <template #number-cell="{ row }">
+          <UButton
+            :to="`/meet/${route.params.slug}/events/${row.original.number}`"
+            class=" "
+          >
+            {{ row.original.number }}
+          </UButton>
+        </template>
         <template #entries-cell="{ row }">
-        
-          <div v-if="row.original.individual" class="flex gap-2">
+          <div v-if="row.original.individual" class="flex gap-2 md:flex-row flex-col">
             <NuxtLink
               :to="`/meet/${route.params.slug}/athletes/${entry.athlete.athlete}`"
               v-for="entry of row.getValue(`entries`)"
             >
-              <UBadge class="capitalize hover:ring-neutral-400 hover:bg-neutral-200 transition-colors" variant="subtle" :color="colors[entry.team]"
-                >{{ entry.athlete.first }}
-                {{ entry.athlete.last }} <span class="font-stretch-condensed text-slate-500">H{{ entry.heat}} {{  entry.lane && "L" + entry.lane }}</span></UBadge
+              <UBadge
+                class="capitalize hover:ring-neutral-400 hover:bg-neutral-200 transition-colors"
+                variant="subtle"
+                :color="colors[entry.team]"
+                >{{ entry.athlete.first }} {{ entry.athlete.last }}
+                <span class="font-stretch-condensed text-slate-500"
+                  >H{{ entry.heat }} {{ entry.lane && "L" + entry.lane }}</span
+                ></UBadge
               >
             </NuxtLink>
           </div>
@@ -53,21 +60,23 @@
 </template>
 <script setup lang="ts">
 const route = useRoute();
-const breakpoints = useBreakpoints(breakpointsTailwind)
+const breakpoints = useBreakpoints(breakpointsTailwind);
 
 const { data, status, error, refresh, clear } = await useFetch(
   `/api/meets/${route.params.slug}`,
   {}
 );
 const events = computed(() => {
-  return data.value?.events?.map((event) => {
-    return {
-      number: event.eventNumber,
-      name: useFormatEvent(event),
-      entries: event.entries,
-      individual: event.iR == "I",
-    };
-  }).filter((x)=> x.number);
+  return data.value?.events
+    ?.map((event) => {
+      return {
+        number: event.eventNumber,
+        name: useFormatEvent(event),
+        entries: event.entries,
+        individual: event.iR == "I",
+      };
+    })
+    .filter((x) => x.number);
 });
 const UBadge = resolveComponent("UBadge");
 const NuxtLink = resolveComponent("NuxtLink");

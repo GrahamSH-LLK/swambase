@@ -1,5 +1,5 @@
 <template>
-    <UContainer class="flex flex-col gap-4">
+    <div class="flex flex-col gap-4">
   <MeetHeader />
 
   {{ useFormatEvent(data) }}
@@ -8,7 +8,7 @@
       {{ formatEntry(entry) }}
     </template>
     {{ entry.athlete?.first }} {{ entry.athlete?.last }}
-  </UCard></UContainer>
+  </UCard></div>
 </template>
 
 <script setup>
