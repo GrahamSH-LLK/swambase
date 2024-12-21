@@ -5,7 +5,7 @@
 
       <UCard v-for="team of data" :key="team.team">
         <template #header>
-          <NuxtLink :to="`/team/${team.team}`" class="text-2xl font-bold"
+          <NuxtLink :to="`/teams/${team.team}`" class="text-2xl font-bold"
             >{{ team.tName }}
             <UBadge class="font-stretch-condensed font-bold">{{
               team.tCode
