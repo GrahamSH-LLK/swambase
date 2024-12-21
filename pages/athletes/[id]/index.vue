@@ -1,6 +1,7 @@
 <template>
   <div class="flex flex-col gap-4">
-    <h2 class="text-3xl">{{ data.first }} {{ data.last }}</h2>
+    <h2 class="text-3xl font-bold font-stretch-semi-condensed">{{ data.first }} {{ data.last }}</h2>
+    <AthleteBar/>
 
     <MeetHeader :meet="meet" />
     <USelectMenu :items="meetDropdown" value-key="id" v-model="meet" />

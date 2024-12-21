@@ -6,7 +6,7 @@
       <UTable
         :data="events"
         :columns="columns"
-        class="overflow-auto "
+        class="overflow-auto"
         v-if="activeTab == '0'"
       >
         <template #number-cell="{ row }">
@@ -87,11 +87,11 @@ const colors = ["warning", "neutral", "info", "error", "success"];
 const columns = [
   {
     accessorKey: "number",
-    header: ({column}) => getHeader(column,"Event Number"),
+    header: ({ column }) => getHeader(column, "Event Number"),
   },
   {
     accessorKey: "name",
-    header: ({column}) => getHeader(column,"Event Name"),
+    header: ({ column }) => getHeader(column, "Event Name"),
   },
   {
     accessorKey: "entries",
@@ -145,19 +145,19 @@ const athleteTable = computed(() => {
 
 const athleteColumns = ref([
   {
-    header: ({column}) => getHeader(column,"First Name"),
+    header: ({ column }) => getHeader(column, "First Name"),
     accessorKey: "firstName",
   },
   {
-    header: ({column}) => getHeader(column,"Last Name"),
+    header: ({ column }) => getHeader(column, "Last Name"),
     accessorKey: "lastName",
   },
   {
-    header: ({column}) => getHeader(column,"Gender"),
+    header: ({ column }) => getHeader(column, "Gender"),
     accessorKey: "gender",
   },
   {
-    header: ({column}) => getHeader(column,"Team"),
+    header: ({ column }) => getHeader(column, "Team"),
     accessorKey: "team",
   },
   {

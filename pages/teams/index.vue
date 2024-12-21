@@ -5,16 +5,16 @@
 
       <UCard v-for="team of data" :key="team.team">
         <template #header>
-          <span to="`/team/${team.team}`" class="text-2xl font-bold"
+          <NuxtLink :to="`/team/${team.team}`" class="text-2xl font-bold"
             >{{ team.tName }}
             <UBadge class="font-stretch-condensed font-bold">{{
               team.tCode
             }}</UBadge>
-          </span>
+          </NuxtLink>
         </template>
-        <p>{{ team.short }}</p>
-        <p>Location: {{ team.location }}</p>
-        <p>{{ team.athletes.length }} athletes</p>
+        <div class="flex gap-1">
+        <UBadge>Short: {{ team.short }}</UBadge> 
+        <UBadge>{{ team.athletes.length }} athletes</UBadge><UBadge>{{ team.tState}} {{ team.tCntry}}</UBadge></div>
       </UCard>
     </div>
   </div>

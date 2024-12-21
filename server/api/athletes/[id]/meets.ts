@@ -19,7 +19,7 @@ export default defineEventHandler(async (event) => {
     meets =  meets?.filter(
       (value, index, self) =>
         index ===
-        self.findIndex((t) =>  t?.meet === value?.meet)
+        self.findIndex((t) =>  t?.meet === value?.meet) 
     ).sort((a,b) => a?.start < b?.start ? 1 : -1);
 
     return meets;
