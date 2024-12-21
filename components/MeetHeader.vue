@@ -7,11 +7,15 @@
 </template>
 
 
-<script setup>
+<script setup lang="ts">
 import {format} from 'date-fns'
+import { string } from 'zod';
 const route = useRoute();
+const props = defineProps<{
+  meet?: number;
+}>();
 const { data, status, error, refresh, clear } = await useFetch(
-  `/api/meets/${route.params.slug}/`,
+  () =>`/api/meets/${props.meet ?? route.params.slug}/`,
   {}
 );
 

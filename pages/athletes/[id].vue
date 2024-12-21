@@ -1,7 +1,9 @@
 <template>
   <div class="flex flex-col gap-4">
-    <MeetHeader />
-    <h2 class="text-2xl font-extrabold">{{ data.first }} {{ data.last }}</h2>
+    <h2 class="text-3xl">{{ data.first }} {{ data.last }}</h2>
+
+    <MeetHeader :meet="meet" />
+    <USelectMenu :items="meetDropdown" value-key="id" v-model="meet" />
 
     <UCard>
       <template #header>
@@ -16,14 +18,22 @@
       </template>
       <UTable :data="resultsRows" class="flex-1" />
     </UCard>
-</div>
+  </div>
 </template>
 
 <script setup lang="ts">
 import { formatDuration, intervalToDuration } from "date-fns";
 const route = useRoute();
+const { data: meets } = await useFetch(
+  `/api/athletes/${route.params.id}/meets`,
+  {}
+);
+const meet = useRouteQuery("meet", meets.value?.[0].meet, {
+  transform: Number,
+});
+
 const { data } = await useFetch(
-  `/api/meets/${route.params.slug}/athletes/${route.params.id}`,
+  () => `/api/meets/${meet.value}/athletes/${route.params.id}`,
   {}
 );
 const columns = ref([
@@ -50,10 +60,17 @@ const columns = ref([
     },
   },
 ]);
+const meetDropdown = computed(() => {
+  return meets.value?.map((meet) => {
+    return {
+      label: meet.mName,
+      id: meet.meet,
+    };
+  });
+});
 
 const resultsRows = computed(() => {
   return data.value?.results?.map((result) => {
-
     return {
       event: useFormatEvent(result),
       place: result.place,

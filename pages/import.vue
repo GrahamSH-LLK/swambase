@@ -48,6 +48,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
   const res = await $fetch("/api/import", {
     method: "POST",
     body: data,
+    
   }).catch((e) => {
     console.log("hii", e);
     toast.add({
@@ -55,13 +56,11 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
       description: e.data.message,
       color: "error",
     });
-  });
-  if (res?.success) {
-    toast.add({
+  }).then(()=>{    toast.add({
       title: "Success",
       description: "The form has been submitted.",
       color: "success",
     });
-  }
+});
 }
 </script>

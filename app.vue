@@ -1,7 +1,7 @@
 <template>
   <UApp>
     <NuxtRouteAnnouncer />
-    <div class="flex flex-col md:flex-row fixed w-screen">
+    <div class="flex flex-col md:flex-row md:fixed w-screen">
       <div class="border-r border-neutral-200 flex flex-col">
         <Nav />
         <NavMenu  class="mx-4 hidden md:block"/>

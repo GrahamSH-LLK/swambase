@@ -81,7 +81,7 @@ export const importData = async (buffer: Buffer) => {
       sex: athlete.Sex,
       age: athlete.Age,
       class: athlete.Class,
-      inactive: athlete.Inactive === 1,
+      inactive: athlete.Inactive,
       wmGroup: athlete.WMGroup,
       wmSubGr: athlete.WMSubGr,
       diveCertified: athlete.DiveCertified === 1,
@@ -98,7 +98,6 @@ export const importData = async (buffer: Buffer) => {
   const meets = reader.getTable("MEET").getData<any>();
 
   for (let meet of meets) {
-    console.log(meet);
     await db.insert(schema.meetTable).values({
       meet: meet.Meet,
       mName: meet.MName,

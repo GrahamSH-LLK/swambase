@@ -2,25 +2,28 @@
   <div class="flex flex-col gap-4 p-4 flex-1 mx-auto w-full">
     <MeetHeader />
     <UTabs :items="items" :content="false" v-model="activeTab"></UTabs>
-    <UCard class="flex overflow-x-scroll">
+    <UCard class="flex overflow-scroll">
       <UTable
         :data="events"
         :columns="columns"
-        class="flex-1 oveflow-auto"
+        class="overflow-auto"
         v-if="activeTab == '0'"
       >
         <template #number-cell="{ row }">
           <UButton
-            :to="`/meet/${route.params.slug}/events/${row.original.number}`"
+            :to="`/meets/${route.params.slug}/events/${row.original.number}`"
             class=" "
           >
             {{ row.original.number }}
           </UButton>
         </template>
         <template #entries-cell="{ row }">
-          <div v-if="row.original.individual" class="flex gap-2 md:flex-row flex-col">
+          <div
+            v-if="row.original.individual"
+            class="flex gap-2 md:flex-row flex-col"
+          >
             <NuxtLink
-              :to="`/meet/${route.params.slug}/athletes/${entry.athlete.athlete}`"
+              :to="`/athletes/${entry.athlete.athlete}?meet=${route.params.slug}`"
               v-for="entry of row.getValue(`entries`)"
             >
               <UBadge
@@ -46,7 +49,7 @@
         <UTable :data="athleteTable" :columns="athleteColumns">
           <template #actions-cell="{ row }"
             ><NuxtLink
-              :to="`/meet/${route.params.slug}/athletes/${row.original.id}`"
+              :to="`/athletes/${row.original.id}?meet=${route.params.slug}`"
               ><UIcon name="lucide:circle-user" class="h-6 w-6 cursor-pointer"
             /></NuxtLink>
           </template>
@@ -60,8 +63,7 @@
 </template>
 <script setup lang="ts">
 const route = useRoute();
-const breakpoints = useBreakpoints(breakpointsTailwind);
-
+const getHeader = useGetHeader();
 const { data, status, error, refresh, clear } = await useFetch(
   `/api/meets/${route.params.slug}`,
   {}
@@ -85,11 +87,11 @@ const colors = ["warning", "neutral", "info", "error", "success"];
 const columns = [
   {
     accessorKey: "number",
-    header: "Event Number",
+    header: ({column}) => getHeader(column,"Event Number"),
   },
   {
     accessorKey: "name",
-    header: "Event Name",
+    header: ({column}) => getHeader(column,"Event Name"),
   },
   {
     accessorKey: "entries",
@@ -143,19 +145,19 @@ const athleteTable = computed(() => {
 
 const athleteColumns = ref([
   {
-    header: "First Name",
+    header: ({column}) => getHeader(column,"First Name"),
     accessorKey: "firstName",
   },
   {
-    header: "Last Name",
+    header: ({column}) => getHeader(column,"Last Name"),
     accessorKey: "lastName",
   },
   {
-    header: "Gender",
+    header: ({column}) => getHeader(column,"Gender"),
     accessorKey: "gender",
   },
   {
-    header: "Team",
+    header: ({column}) => getHeader(column,"Team"),
     accessorKey: "team",
   },
   {
@@ -167,7 +169,6 @@ import { useRouteHash, useRouteQuery } from "@vueuse/router";
 import { formatDuration } from "date-fns";
 const resultsTable = computed(() => {
   return data.value?.results.map((result) => {
-    console.log(result);
     return {
       place: result.place,
       event: useFormatEvent(result),

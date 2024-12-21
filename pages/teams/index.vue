@@ -1,14 +1,18 @@
 <template>
   <div class="flex flex-1 p-4">
     <div class="flex flex-col gap-4">
+      <h1 class="text-3xl font-bold font-stretch-semi-condensed">Teams</h1>
+
       <UCard v-for="team of data" :key="team.team">
         <template #header>
           <span to="`/team/${team.team}`" class="text-2xl font-bold"
             >{{ team.tName }}
-            <UBadge class="font-stretch-condensed font-bold">{{ team.tCode }}</UBadge>
-        </span>
+            <UBadge class="font-stretch-condensed font-bold">{{
+              team.tCode
+            }}</UBadge>
+          </span>
         </template>
-<p>{{ team.short}}</p>
+        <p>{{ team.short }}</p>
         <p>Location: {{ team.location }}</p>
         <p>{{ team.athletes.length }} athletes</p>
       </UCard>
