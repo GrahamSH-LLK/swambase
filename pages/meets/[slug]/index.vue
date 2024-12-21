@@ -168,7 +168,7 @@ import { breakpointsTailwind } from "@vueuse/core";
 import { useRouteHash, useRouteQuery } from "@vueuse/router";
 import { formatDuration } from "date-fns";
 const resultsTable = computed(() => {
-  return data.value?.results.map((result) => {
+  return data.value?.results.filter((result)=> {return result.iR != "R"}).map((result) => {
     return {
       place: result.place,
       event: useFormatEvent(result),
