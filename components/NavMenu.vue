@@ -22,15 +22,13 @@ const items = computed(() => [
   {
     label: "Teams",
     to: "/teams",
-    open: true,
+    defaultOpen: true,
+
     children: [
       ...(teams.value?.map((team) => {
         return {
           label: team.tName,
           to: `/teams/${team.team}`,
-
-     
-          
         };
       }) || []),
       { label: "All Teams", to: "/teams", icon: "i-lucide-list" },
@@ -39,7 +37,7 @@ const items = computed(() => [
   {
     label: "Meets",
     to: "/meets",
-    open: true,
+    defaultOpen: true,
     children: [
       ...(meets.value?.slice(0, 10).map((meet) => {
         return {

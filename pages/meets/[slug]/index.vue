@@ -6,7 +6,7 @@
       <UTable
         :data="events"
         :columns="columns"
-        class="overflow-auto"
+        class="overflow-auto "
         v-if="activeTab == '0'"
       >
         <template #number-cell="{ row }">
