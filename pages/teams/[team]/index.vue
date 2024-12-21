@@ -3,7 +3,15 @@
     <h1 class="text-3xl font-bold font-stretch-semi-condensed">
       {{ team?.tName }}
     </h1>
-<UCheckbox v-model="showInactive" label="Show inactive swimmers"/>
+    <div class="flex justify-between items-center p-2">
+      <UCheckbox v-model="showInactive" label="Show inactive swimmers" />
+      <UInput
+        v-model="search"
+        placeholder="Search"
+        class="w-1/4"
+        icon="heroicons-outline:search"
+        />
+    </div>
     <UTable :data="athletesTable" :columns="athleteColumns">
       <template #actions-cell="{ row }"
         ><NuxtLink :to="`/athletes/${row.original.id}`"
@@ -14,24 +22,24 @@
   </div>
 </template>
 <script setup lang="ts">
-import type { TableColumn } from '@nuxt/ui';
+import type { TableColumn } from "@nuxt/ui";
 
 const route = useRoute();
 const { data: team } = await useFetch(`/api/teams/${route.params.team}`, {});
 const showInactive = ref(false);
-
+const search = ref("");
 const getHeader = useGetHeader();
-const athleteColumns : TableColumn<any>[]= ref([
+const athleteColumns: TableColumn<any>[] = ref([
   {
-    header: ({column}) => getHeader(column,"First Name"),
+    header: ({ column }) => getHeader(column, "First Name"),
     accessorKey: "firstName",
   },
   {
-    header: ({column}) => getHeader(column,"Last Name"),
+    header: ({ column }) => getHeader(column, "Last Name"),
     accessorKey: "lastName",
   },
   {
-    header: ({column}) => getHeader(column,"Gender"),
+    header: ({ column }) => getHeader(column, "Gender"),
     accessorKey: "gender",
   },
 
@@ -43,7 +51,7 @@ const athleteColumns : TableColumn<any>[]= ref([
 const athletesTable = computed(() => {
   return team.value?.athletes
     .filter((athlete) => {
-      return showInactive.value || !athlete.inactive;
+      return showInactive.value || !athlete.inactive && (athlete.first + " " + athlete.last)?.toLowerCase().includes(search.value.toLowerCase());
     })
     .map((athlete) => {
       return {
