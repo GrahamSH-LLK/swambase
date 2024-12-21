@@ -7,6 +7,7 @@ export default defineEventHandler(async (event) => {
         with: {
             team: true,
             entries: {
+
                 with: {
                     meet: true
                 }
@@ -19,7 +20,7 @@ export default defineEventHandler(async (event) => {
       (value, index, self) =>
         index ===
         self.findIndex((t) =>  t?.meet === value?.meet)
-    );
+    ).sort((a,b) => a?.start < b?.start ? 1 : -1);
 
     return meets;
 });
