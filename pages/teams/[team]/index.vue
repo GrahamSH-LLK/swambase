@@ -51,7 +51,7 @@ const athleteColumns: TableColumn<any>[] = ref([
 const athletesTable = computed(() => {
   return team.value?.athletes
     .filter((athlete) => {
-      return showInactive.value || !athlete.inactive && (athlete.first + " " + athlete.last)?.toLowerCase().includes(search.value.toLowerCase());
+      return (showInactive.value || !athlete.inactive) && (athlete.first + " " + athlete.last)?.toLowerCase().includes(search.value.toLowerCase());
     })
     .map((athlete) => {
       return {
