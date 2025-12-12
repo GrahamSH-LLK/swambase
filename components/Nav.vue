@@ -1,26 +1,34 @@
 <template>
   <header
-    class="w-full border-b border-red-400  backdrop-blur dark:bg-gray-950/25 mb-4 shadow-xs shadow-red-400/50"
+    class="w-full border-b border-blue-500/30 backdrop-blur bg-white/80 dark:bg-slate-950/80"
   >
     <div
-      class="mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl flex items-center justify-between gap-3 h-[var(--ui-header-height)]"
+      class="px-4 sm:px-6 flex items-center justify-between gap-3 h-[var(--ui-header-height)]"
     >
-      <div class="flex gap-2">
-        <NuxtLink
-          class="font-bold font-display font-stretch-extra-condensed text-3xl text-blue-950 dark:text-white flex justify-center items-center gap-2"
-          to="/"
-          >SwamBase 🏊</NuxtLink
-        >
-      </div>
-      <UPopover class="block md:hidden">
-        <UButton icon="i-lucide-list" color="neutral" variant="soft" />
+      <NuxtLink
+        class="font-bold text-2xl md:text-3xl text-blue-600 dark:text-blue-400 flex items-center gap-2 hover:text-blue-700 dark:hover:text-blue-300 transition-colors"
+        to="/"
+      >
+        <span class="text-3xl">🏊</span>
+        <span class="font-display font-stretch-extra-condensed">SwamBase</span>
+      </NuxtLink>
 
-        <template #content>
-          <div class="my-4">
-          <NavMenu class=""/></div>
-        </template>
-      </UPopover>
+      <div class="flex items-center gap-2">
+        <UColorModeButton />
+        <UPopover class="block md:hidden">
+          <UButton
+            icon="i-lucide-menu"
+            color="neutral"
+            variant="ghost"
+            size="lg"
+          />
+          <template #content>
+            <div class="p-2 min-w-64">
+              <NavMenu />
+            </div>
+          </template>
+        </UPopover>
+      </div>
     </div>
   </header>
 </template>
-

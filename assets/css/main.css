@@ -1,5 +1,29 @@
 @import "tailwindcss";
 @import "@nuxt/ui";
+
 :root {
   --ui-header-height: calc(var(--spacing) * 16);
+  --ui-bg: theme(colors.white);
+  --ui-bg-elevated: theme(colors.slate.50);
+}
+
+.dark {
+  --ui-bg: theme(colors.slate.950);
+  --ui-bg-elevated: theme(colors.slate.900);
+}
+
+/* Swimming theme accents */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Page transition */
+.page-enter-active,
+.page-leave-active {
+  transition: opacity 0.2s ease-in-out;
+}
+
+.page-enter-from,
+.page-leave-to {
+  opacity: 0;
 }

@@ -11,7 +11,7 @@
       </UFormField>
 
       <UFormField label="MDB File" name="file">
-        <UInput type="file" accept=".mdb" ref="file" />
+        <UFileUpload v-model="modelVal" class="w-96 min-h-48" accept=".mdb"/>
       </UFormField>
 
       <UButton type="submit"> Submit </UButton>
@@ -30,11 +30,12 @@ const state = reactive<Partial<Schema>>({
   password: undefined,
 });
 const toast = useToast();
+const modelVal = ref<File | null>(null);
 const fileEl = useTemplateRef("file");
 async function onSubmit(event: FormSubmitEvent<Schema>) {
   const data = new FormData();
   data.append("password", event.data.password);
-  const file = fileEl.value?.inputRef?.files?.[0];
+  const file = modelVal.value;
   if (file) {
     data.append("file", file);
   } else {
