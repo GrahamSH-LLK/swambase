@@ -23,5 +23,11 @@ export default defineNuxtConfig({
     server: {
       allowedHosts: ["institute-funky-default-mrna.trycloudflare.com"],
     },
+    optimizeDeps: {
+      include: ["echarts", "vue-echarts"],
+    },
+  },
+  build: {
+    transpile: ["echarts", "vue-echarts", "resize-detector"],
   },
 });
