@@ -28,6 +28,6 @@ export default defineNuxtConfig({
     },
   },
   build: {
-    transpile: ["echarts", "vue-echarts", "resize-detector"],
+    transpile: ["echarts", "vue-echarts", "resize-detector", "tslib"],
   },
 });
