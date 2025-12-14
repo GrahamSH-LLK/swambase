@@ -53,9 +53,7 @@ export const useFormatTime = (time: number) => {
 import type { TableColumn } from "@nuxt/ui";
 import type { Column } from "@tanstack/vue-table";
 
-
 export const useGetHeader = () => {
-
   return function (column: Column<any>, label: string) {
     const isSorted = column.getIsSorted();
 
@@ -108,4 +106,33 @@ export const useGetHeader = () => {
         })
     );
   };
+};
+
+export const useCourseLabel = (course: string) => {
+  const labels: Record<string, string> = {
+    Y: "Short Course Yards",
+    YO: "Short Course Yards",
+
+    S: "Short Course Meters",
+    SO: "Short Course Meters",
+
+    L: "Long Course Meters",
+    LO: "Long Course Meters",
+    YSL: "Multi-Course",
+    YLS: "Multi-Course",
+  };
+  return labels[course] || course;
+};
+
+export const useCourseColor = (
+  course: string
+): "info" | "success" | "warning" | "neutral" => {
+  const colors: Record<string, "info" | "success" | "warning" | "neutral"> = {
+    Y: "info",
+    YO: "info",
+    S: "success",
+    SO: "success",
+    L: "warning",
+  };
+  return colors[course] || "neutral";
 };

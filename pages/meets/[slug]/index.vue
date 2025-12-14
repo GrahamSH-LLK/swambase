@@ -52,7 +52,7 @@
               <UBadge
                 class="capitalize hover:ring-2 hover:ring-offset-1 transition-all cursor-pointer"
                 variant="subtle"
-                :color="colors[entry.team]"
+                :color="colors[entry.team % colors.length]"
               >
                 {{ entry.athlete.first }} {{ entry.athlete.last }}
                 <span class="font-mono text-xs opacity-70 ml-1">
@@ -87,7 +87,7 @@
               >
                 <div class="flex items-center gap-2 mb-2">
                   <UBadge
-                    :color="colors[relay.team]"
+                    :color="colors[relay.team % colors.length]"
                     variant="subtle"
                     size="sm"
                   >
@@ -113,8 +113,14 @@
         </template>
       </UTable>
 
-      <div v-else-if="activeTab == '1'">
-        <UTable :data="athleteTable" :columns="athleteColumns">
+      <div v-else-if="activeTab == '1'" class="flex flex-col gap-4">
+        <UInput
+          v-model="athleteSearch"
+          placeholder="Search athletes..."
+          icon="i-lucide-search"
+          class="max-w-sm"
+        />
+        <UTable :data="filteredAthleteTable" :columns="athleteColumns">
           <template #actions-cell="{ row }">
             <NuxtLink
               :to="`/athletes/${row.original.id}?meet=${route.params.slug}`"
@@ -130,14 +136,112 @@
         </UTable>
       </div>
 
-      <div v-else-if="activeTab == '2'">
-        <UTable :data="resultsTable" />
+      <div v-else-if="activeTab == '2'" class="flex flex-col gap-6">
+        <div class="flex flex-wrap gap-4 items-center mb-2">
+          <UInput
+            v-model="resultsSearch"
+            placeholder="Search by athlete or event..."
+            icon="i-lucide-search"
+            class="max-w-sm"
+          />
+          <USelectMenu
+            v-model="resultsEventFilter"
+            :items="eventFilterOptions"
+            placeholder="Filter by event"
+            class="w-48"
+            value-key="value"
+          />
+          <UButton
+            v-if="resultsSearch || resultsEventFilter"
+            variant="ghost"
+            color="neutral"
+            icon="i-lucide-x"
+            @click="
+              resultsSearch = '';
+              resultsEventFilter = null;
+            "
+          >
+            Clear
+          </UButton>
+        </div>
+
+        <div class="space-y-6">
+          <div
+            v-for="eventGroup in groupedResults"
+            :key="eventGroup.eventName"
+            class="border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden"
+          >
+            <div
+              class="bg-gradient-to-r from-blue-50 to-sky-50 dark:from-blue-950/50 dark:to-sky-950/50 px-4 py-3 border-b border-slate-200 dark:border-slate-700"
+            >
+              <div class="flex items-center justify-between">
+                <h3
+                  class="font-semibold text-slate-900 dark:text-white flex items-center gap-2"
+                >
+                  <UIcon name="i-lucide-flag" class="w-4 h-4 text-blue-500" />
+                  {{ eventGroup.eventName }}
+                </h3>
+                <UBadge variant="subtle" color="neutral">
+                  {{ eventGroup.results.length }} results
+                </UBadge>
+              </div>
+            </div>
+            <div class="divide-y divide-slate-100 dark:divide-slate-800">
+              <div
+                v-for="(result, idx) in eventGroup.results"
+                :key="result.result"
+                class="flex items-center justify-between px-4 py-3 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors"
+              >
+                <div class="flex items-center gap-4">
+                  <div
+                    class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold"
+                    :class="getPlaceClass(result.place)"
+                  >
+                    {{ result.place || idx + 1 }}
+                  </div>
+
+                  <div>
+                    <NuxtLink
+                      :to="`/athletes/${result.athlete?.athlete}?meet=${route.params.slug}`"
+                      class="font-medium text-slate-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                    >
+                      {{ result.athlete?.first }} {{ result.athlete?.last }}
+                    </NuxtLink>
+                  </div>
+                </div>
+
+                <div class="flex items-center gap-3">
+                  <span
+                    class="font-mono text-lg font-semibold text-slate-900 dark:text-white"
+                  >
+                    {{ useFormatTime(result.score) }}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div
+          v-if="groupedResults.length === 0"
+          class="text-center py-12 text-slate-500"
+        >
+          <UIcon
+            name="i-lucide-inbox"
+            class="w-12 h-12 mx-auto mb-4 opacity-50"
+          />
+          <p>No results found</p>
+        </div>
       </div>
     </UCard>
   </div>
 </template>
 
 <script setup lang="ts">
+import { useRouteQuery } from "@vueuse/router";
+import type { Column } from "@tanstack/vue-table";
+import type { StringFormatParams } from "zod/v4/core";
+
 const route = useRoute();
 const getHeader = useGetHeader();
 
@@ -146,22 +250,24 @@ const { data, status, error, refresh, clear } = await useFetch(
   {}
 );
 
+// Type assertion for the data since API returns meet with events and results
+const meetData = computed(() => data.value);
+
 const events = computed(() => {
-  return data.value?.events
-    ?.map((event) => ({
+  return meetData.value?.events
+    ?.map((event: any) => ({
       number: event.eventNumber,
       name: useFormatEvent(event),
       entries: event.entries,
       individual: event.iR == "I",
     }))
-    .filter((x) => x.number);
+    .filter((x: any) => x.number);
 });
 
 const colors = ["warning", "neutral", "info", "error", "success"] as const;
 
 const expanded = ref<Record<string, boolean>>({});
 
-// Group relay entries by heat/lane
 const getRelayTeams = (entries: any[]) => {
   if (!entries) return [];
 
@@ -192,11 +298,13 @@ const columns = [
   },
   {
     accessorKey: "number",
-    header: ({ column }) => getHeader(column, "Event #"),
+    header: ({ column }: { column: Column<any> }) =>
+      getHeader(column, "Event #"),
   },
   {
     accessorKey: "name",
-    header: ({ column }) => getHeader(column, "Event Name"),
+    header: ({ column }: { column: Column<any> }) =>
+      getHeader(column, "Event Name"),
   },
   {
     accessorKey: "entries",
@@ -229,7 +337,8 @@ const activeTab = computed({
     ).toString();
   },
   set(value: string) {
-    activeTabHash.value = items.value[parseInt(value)]["label"]?.toLowerCase();
+    activeTabHash.value =
+      items.value[parseInt(value)]?.label?.toLowerCase() ?? "entries";
   },
 });
 
@@ -238,31 +347,50 @@ const { data: athletes } = await useFetch(
   {}
 );
 
+// Search state
+const athleteSearch = ref("");
+const resultsSearch = ref("");
+const resultsEventFilter = ref<string | null>(null);
+
 const athleteTable = computed(() => {
-  return athletes.value?.map((athlete) => ({
+  return (athletes.value as any[])?.map((athlete: any) => ({
     id: athlete?.athlete,
     firstName: athlete?.first,
     lastName: athlete?.last,
     gender: athlete?.sex,
-    team: athlete?.team.tName,
+    team: athlete?.team?.tName,
   }));
+});
+
+const filteredAthleteTable = computed(() => {
+  if (!athleteSearch.value) return athleteTable.value;
+  const search = athleteSearch.value.toLowerCase();
+  return athleteTable.value?.filter(
+    (athlete) =>
+      athlete.firstName?.toLowerCase().includes(search) ||
+      athlete.lastName?.toLowerCase().includes(search) ||
+      athlete.team?.toLowerCase().includes(search)
+  );
 });
 
 const athleteColumns = ref([
   {
-    header: ({ column }) => getHeader(column, "First Name"),
+    header: ({ column }: { column: Column<any> }) =>
+      getHeader(column, "First Name"),
     accessorKey: "firstName",
   },
   {
-    header: ({ column }) => getHeader(column, "Last Name"),
+    header: ({ column }: { column: Column<any> }) =>
+      getHeader(column, "Last Name"),
     accessorKey: "lastName",
   },
   {
-    header: ({ column }) => getHeader(column, "Gender"),
+    header: ({ column }: { column: Column<any> }) =>
+      getHeader(column, "Gender"),
     accessorKey: "gender",
   },
   {
-    header: ({ column }) => getHeader(column, "Team"),
+    header: ({ column }: { column: Column<any> }) => getHeader(column, "Team"),
     accessorKey: "team",
   },
   {
@@ -270,16 +398,83 @@ const athleteColumns = ref([
   },
 ]);
 
-import { useRouteQuery } from "@vueuse/router";
-
-const resultsTable = computed(() => {
-  return data.value?.results
-    .filter((result) => result.iR != "R")
-    .map((result) => ({
-      place: result.place,
-      event: useFormatEvent(result),
-      time: useFormatTime(result.score),
-      athlete: result?.athlete?.first + " " + result?.athlete?.last,
-    }));
+// Event filter options for results
+const eventFilterOptions = computed(() => {
+  const eventSet = new Map<string, string>();
+  meetData.value?.results?.forEach((result: any) => {
+    if (result.iR !== "R") {
+      const eventName = useFormatEvent(result);
+      eventSet.set(eventName, eventName);
+    }
+  });
+  return [
+    { label: "All Events", value: null },
+    ...Array.from(eventSet.values()).map((name) => ({
+      label: name,
+      value: name,
+    })),
+  ];
 });
+
+// Group results by event
+const groupedResults = computed(() => {
+  if (!meetData.value?.results) return [];
+
+  const filtered = meetData.value.results.filter((result: any) => {
+    if (result.iR === "R") return false;
+
+    const eventName = useFormatEvent(result);
+
+    // Apply event filter
+    if (resultsEventFilter.value && eventName !== resultsEventFilter.value) {
+      return false;
+    }
+
+    // Apply search filter
+    if (resultsSearch.value) {
+      const search = resultsSearch.value.toLowerCase();
+      const athleteName =
+        `${result.athlete?.first} ${result.athlete?.last}`.toLowerCase();
+      if (
+        !athleteName.includes(search) &&
+        !eventName.toLowerCase().includes(search)
+      ) {
+        return false;
+      }
+    }
+
+    return true;
+  });
+
+  // Group by event
+  const groups = new Map<string, { eventName: string; results: any[] }>();
+
+  filtered.forEach((result: any) => {
+    const eventName = useFormatEvent(result);
+    if (!groups.has(eventName)) {
+      groups.set(eventName, { eventName, results: [] });
+    }
+    groups.get(eventName)!.results.push(result);
+  });
+
+  // Sort results within each group by place/score
+  groups.forEach((group) => {
+    group.results.sort((a, b) => {
+      if (a.place && b.place) return a.place - b.place;
+      return (a.score || 0) - (b.score || 0);
+    });
+  });
+
+  return Array.from(groups.values());
+});
+
+const getPlaceClass = (place: number | null) => {
+  if (place === 1)
+    return "bg-amber-100 text-amber-700 dark:bg-amber-900/50 dark:text-amber-300";
+  if (place === 2)
+    return "bg-slate-200 text-slate-700 dark:bg-slate-700 dark:text-slate-300";
+  if (place === 3)
+    return "bg-orange-100 text-orange-700 dark:bg-orange-900/50 dark:text-orange-300";
+  return "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400";
+};
 </script>
