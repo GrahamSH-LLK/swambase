@@ -211,11 +211,24 @@
                 </div>
 
                 <div class="flex items-center gap-3">
-                  <span
-                    class="font-mono text-lg font-semibold text-slate-900 dark:text-white"
-                  >
-                    {{ useFormatTime(result.score) }}
-                  </span>
+                  <div class="text-right">
+                    <span
+                      class="font-mono text-lg font-semibold text-slate-900 dark:text-white"
+                    >
+                      {{ useFormatTime(result.score) }}
+                    </span>
+                    <div
+                      v-if="getDistanceToCut(result, eventGroup)"
+                      class="text-xs"
+                      :class="
+                        getDistanceToCut(result, eventGroup)?.achieved
+                          ? 'text-green-600 dark:text-green-400'
+                          : 'text-slate-500 dark:text-slate-400'
+                      "
+                    >
+                      {{ getDistanceToCut(result, eventGroup)?.text }}
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -241,6 +254,7 @@
 import { useRouteQuery } from "@vueuse/router";
 import type { Column } from "@tanstack/vue-table";
 import type { StringFormatParams } from "zod/v4/core";
+import { useDistanceToNextCut, qualifyingLevelLabels } from "~/composables";
 
 const route = useRoute();
 const getHeader = useGetHeader();
@@ -476,5 +490,30 @@ const getPlaceClass = (place: number | null) => {
   if (place === 3)
     return "bg-orange-100 text-orange-700 dark:bg-orange-900/50 dark:text-orange-300";
   return "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400";
+};
+
+const getDistanceToCut = (result: any, eventGroup: any) => {
+  if (!result.score || result.score <= 0) return null;
+
+  // Get the event info from the first result in the group (they share distance/stroke/sex)
+  const eventResult = eventGroup.results[0] || result;
+
+  const cutInfo = useDistanceToNextCut(
+    result.score,
+    eventResult.distance,
+    eventResult.stroke,
+    eventResult.sex
+  );
+
+  if (!cutInfo.level || cutInfo.difference === null) return null;
+
+  const sign = cutInfo.achieved ? "-" : "+";
+  const seconds = (Math.abs(cutInfo.difference) / 100).toFixed(2);
+  const label = qualifyingLevelLabels[cutInfo.level];
+
+  return {
+    achieved: cutInfo.achieved,
+    text: cutInfo.achieved ? `${label} ✓` : `${sign}${seconds}s to ${label}`,
+  };
 };
 </script>

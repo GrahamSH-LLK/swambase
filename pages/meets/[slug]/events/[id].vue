@@ -87,11 +87,24 @@
               </div>
             </div>
             <div class="flex items-center gap-4">
-              <span
-                class="font-mono text-xl font-semibold text-slate-900 dark:text-white"
-              >
-                {{ useFormatTime(result.score) }}
-              </span>
+              <div class="text-right">
+                <span
+                  class="font-mono text-xl font-semibold text-slate-900 dark:text-white"
+                >
+                  {{ useFormatTime(result.score) }}
+                </span>
+                <div
+                  v-if="getDistanceToCut(result)"
+                  class="text-xs"
+                  :class="
+                    getDistanceToCut(result)?.achieved
+                      ? 'text-green-600 dark:text-green-400'
+                      : 'text-slate-500 dark:text-slate-400'
+                  "
+                >
+                  {{ getDistanceToCut(result)?.text }}
+                </div>
+              </div>
               <div class="flex gap-2">
                 <UBadge
                   v-if="result.fP === 'F'"
@@ -134,7 +147,12 @@
 </template>
 
 <script setup>
-import { useFormatEvent, useFormatTime } from "~/composables";
+import {
+  useFormatEvent,
+  useFormatTime,
+  useDistanceToNextCut,
+  qualifyingLevelLabels,
+} from "~/composables";
 
 const route = useRoute();
 const { data, status, error, refresh, clear } = await useFetch(
@@ -167,5 +185,27 @@ const getPlaceClass = (place) => {
   if (place === 3)
     return "bg-orange-100 text-orange-700 dark:bg-orange-900/50 dark:text-orange-300";
   return "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400";
+};
+
+const getDistanceToCut = (result) => {
+  if (!data.value || !result.score || result.score <= 0) return null;
+
+  const cutInfo = useDistanceToNextCut(
+    result.score,
+    data.value.distance,
+    data.value.stroke,
+    data.value.sex
+  );
+
+  if (!cutInfo.level || cutInfo.difference === null) return null;
+
+  const sign = cutInfo.achieved ? "-" : "+";
+  const seconds = (Math.abs(cutInfo.difference) / 100).toFixed(2);
+  const label = qualifyingLevelLabels[cutInfo.level];
+
+  return {
+    achieved: cutInfo.achieved,
+    text: cutInfo.achieved ? `${label} ✓` : `${sign}${seconds}s to ${label}`,
+  };
 };
 </script>

@@ -140,6 +140,7 @@ import {
   LegendComponent,
 } from "echarts/components";
 import VChart from "vue-echarts";
+import { useDistanceToNextCut, qualifyingLevelLabels } from "~/composables";
 
 use([
   CanvasRenderer,
@@ -332,6 +333,23 @@ const columns = ref([
     accessorKey: "score",
     cell: ({ row }) => {
       return useFormatTime(row.original.score);
+    },
+  },
+  {
+    header: ({ column }) => getHeader(column, "Distance to Cut"),
+    accessorKey: "distanceToCut",
+    cell: ({ row }) => {
+      const cutInfo = useDistanceToNextCut(
+        row.original.score,
+        row.original.distance,
+        row.original.stroke,
+        athlete.value?.sex || "M"
+      );
+      if (!cutInfo.level || cutInfo.difference === null) return "—";
+      const sign = cutInfo.achieved ? "-" : "+";
+      const seconds = (Math.abs(cutInfo.difference) / 100).toFixed(2);
+      const label = qualifyingLevelLabels[cutInfo.level];
+      return cutInfo.achieved ? `${label} ✓` : `${sign}${seconds}s to ${label}`;
     },
   },
   {
