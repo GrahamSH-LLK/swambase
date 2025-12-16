@@ -41,7 +41,7 @@ export const useFormatTime = (time: number) => {
 
     const minutes = time / 100 / 60;
     const seconds = (minutes - Math.floor(minutes)) * 60;
-    const milliseconds = (seconds - Math.floor(seconds)) * 60;
+    const milliseconds = (seconds - Math.floor(seconds)) * 100;
     const formatted = `${zeroPad(Math.floor(minutes))}:${zeroPad(
       Math.floor(seconds)
     )}.${zeroPad(Math.floor(milliseconds))}`;
@@ -154,15 +154,8 @@ export const qualifyingTimes: Record<
   string,
   Record<QualifyingLevel, QualifyingStandard>
 > = {
-  diving: {
-    north: { boys: 18000, girls: 18000 },
-    south: { boys: 17500, girls: 17500 },
-    centralWest: { boys: 15000, girls: 15000 },
-    stateD1: { boys: 19300, girls: 18500 },
-    stateD2: { boys: 18800, girls: 19000 },
-    fastChance: { boys: null, girls: null },
-  },
-  "200 MR": {
+  // 200 Medley Relay
+  "200 FRM": {
     north: { boys: 11261, girls: 13535 },
     south: { boys: 11299, girls: 12673 },
     centralWest: { boys: 11959, girls: 13081 },
@@ -170,6 +163,7 @@ export const qualifyingTimes: Record<
     stateD2: { boys: 10980, girls: 12440 },
     fastChance: { boys: null, girls: null },
   },
+  // 200 Freestyle
   "200 FR": {
     north: { boys: 11759, girls: 13148 },
     south: { boys: 11902, girls: 13257 },
@@ -178,6 +172,7 @@ export const qualifyingTimes: Record<
     stateD2: { boys: 11697, girls: 12951 },
     fastChance: { boys: 13990, girls: 15070 },
   },
+  // 200 IM
   "200 IM": {
     north: { boys: 13303, girls: 14973 },
     south: { boys: 13512, girls: 15013 },
@@ -186,6 +181,7 @@ export const qualifyingTimes: Record<
     stateD2: { boys: 13275, girls: 14717 },
     fastChance: { boys: 16069, girls: 17059 },
   },
+  // 50 Freestyle
   "50 FR": {
     north: { boys: 2403, girls: 2698 },
     south: { boys: 2428, girls: 2714 },
@@ -194,6 +190,7 @@ export const qualifyingTimes: Record<
     stateD2: { boys: 2368, girls: 2684 },
     fastChance: { boys: 2768, girls: 3090 },
   },
+  // 100 Butterfly
   "100 FLY": {
     north: { boys: 5910, girls: 6732 },
     south: { boys: 5932, girls: 6712 },
@@ -202,6 +199,7 @@ export const qualifyingTimes: Record<
     stateD2: { boys: 5803, girls: 6642 },
     fastChance: { boys: 7313, girls: 7964 },
   },
+  // 100 Freestyle
   "100 FR": {
     north: { boys: 5291, girls: 5985 },
     south: { boys: 5339, girls: 6046 },
@@ -210,6 +208,7 @@ export const qualifyingTimes: Record<
     stateD2: { boys: 5199, girls: 5935 },
     fastChance: { boys: 6223, girls: 6834 },
   },
+  // 500 Freestyle
   "500 FR": {
     north: { boys: 32425, girls: 36247 },
     south: { boys: 32994, girls: 35837 },
@@ -218,7 +217,8 @@ export const qualifyingTimes: Record<
     stateD2: { boys: 32266, girls: 34837 },
     fastChance: { boys: 39670, girls: 41094 },
   },
-  "200 FR-R": {
+  // 200 Freestyle Relay
+  "200 FR R": {
     north: { boys: 10052, girls: 11871 },
     south: { boys: 10074, girls: 11383 },
     centralWest: { boys: 10593, girls: 11672 },
@@ -226,6 +226,7 @@ export const qualifyingTimes: Record<
     stateD2: { boys: 9803, girls: 11183 },
     fastChance: { boys: null, girls: null },
   },
+  // 100 Backstroke
   "100 BK": {
     north: { boys: 6067, girls: 6826 },
     south: { boys: 6249, girls: 6898 },
@@ -234,6 +235,7 @@ export const qualifyingTimes: Record<
     stateD2: { boys: 5996, girls: 6748 },
     fastChance: { boys: 7652, girls: 7945 },
   },
+  // 100 Breaststroke
   "100 BR": {
     north: { boys: 6773, girls: 7813 },
     south: { boys: 6907, girls: 7912 },
@@ -242,7 +244,8 @@ export const qualifyingTimes: Record<
     stateD2: { boys: 6721, girls: 7716 },
     fastChance: { boys: 8294, girls: 8977 },
   },
-  "400 FR-R": {
+  // 400 Freestyle Relay
+  "400 FR R": {
     north: { boys: 22267, girls: 26648 },
     south: { boys: 22262, girls: 25324 },
     centralWest: { boys: 24835, girls: 26080 },
