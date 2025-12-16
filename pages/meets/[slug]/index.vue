@@ -502,7 +502,7 @@ const getDistanceToCut = (result: any, eventGroup: any) => {
     result.score,
     eventResult.distance,
     eventResult.stroke,
-    eventResult.sex
+    result.athlete.sex
   );
 
   if (!cutInfo.level || cutInfo.difference === null) return null;
