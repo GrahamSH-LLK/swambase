@@ -277,12 +277,12 @@ export const useQualifyingTime = (
 };
 
 export const qualifyingLevelLabels: Record<QualifyingLevel, string> = {
-  north: "North",
-  south: "South",
-  centralWest: "Central/Western",
+  north: "Northern Mass",
+  south: "Southern Mass",
+  centralWest: "Western Mass",
   fastChance: "Fast Chance",
-  stateD1: "State Division I",
-  stateD2: "State Division II",
+  stateD1: "States (Division I)",
+  stateD2: "States (Division II)",
 };
 
 // Qualifying levels to check in order (easiest to hardest)
